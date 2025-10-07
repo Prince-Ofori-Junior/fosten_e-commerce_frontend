@@ -14,12 +14,15 @@ const LoginPage = () => {
   const [csrfToken, setCsrfToken] = useState("");
 
   const API_BASE = process.env.REACT_APP_API_BASE_URL;
-  const REDIRECT_PATH = process.env.REACT_APP_DEFAULT_REDIRECT;
+  const REDIRECT_PATH = process.env.REACT_APP_DEFAULT_REDIRECT || "/";
 
+  // ✅ Fetch CSRF token once on mount
   useEffect(() => {
     const fetchCsrf = async () => {
       try {
-        const res = await fetch(`${API_BASE}/csrf-token`, { credentials: "include" });
+        const res = await fetch(`${API_BASE}/csrf-token`, {
+          credentials: "include",
+        });
         if (!res.ok) throw new Error("Failed to fetch CSRF token");
         const data = await res.json();
         setCsrfToken(data.csrfToken);
@@ -46,7 +49,7 @@ const LoginPage = () => {
     try {
       const res = await fetch(`${API_BASE}/api/auth/login`, {
         method: "POST",
-        credentials: "include",
+        credentials: "include", // include cookies for CSRF
         headers: {
           "Content-Type": "application/json",
           "X-CSRF-Token": csrfToken,
@@ -62,15 +65,20 @@ const LoginPage = () => {
 
         if (data.errors && Array.isArray(data.errors)) {
           data.errors.forEach((err) => {
-            if (err.param) errorsObj[err.param] = err.message;
-            else generalMsg = err.message || generalMsg;
+            if (err.param) {
+              errorsObj[err.param] = err.message;
+            } else {
+              generalMsg = err.message || generalMsg;
+            }
           });
+
+          if (Object.keys(errorsObj).length > 0) setFieldErrors(errorsObj);
         }
 
-        setFieldErrors(errorsObj);
         throw new Error(generalMsg || data.message || "Invalid email or password");
       }
 
+      // ✅ Login success
       localStorage.setItem("token", data.data?.accessToken || "");
       setSuccess("✅ Login successful! Redirecting...");
       setTimeout(() => navigate(REDIRECT_PATH), 1500);
@@ -97,6 +105,7 @@ const LoginPage = () => {
             value={form.email}
             onChange={handleChange}
             required
+            autoComplete="email"
           />
           {fieldErrors.email && <p className="error-message">{fieldErrors.email}</p>}
 
@@ -109,8 +118,12 @@ const LoginPage = () => {
               onChange={handleChange}
               required
               minLength={6}
+              autoComplete="current-password"
             />
-            <span className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
+            <span
+              className="toggle-password"
+              onClick={() => setShowPassword(!showPassword)}
+            >
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
             {fieldErrors.password && <p className="error-message">{fieldErrors.password}</p>}
@@ -128,7 +141,9 @@ const LoginPage = () => {
           </span>
         </p>
 
-        <div className="divider"><span>or</span></div>
+        <div className="divider">
+          <span>or</span>
+        </div>
 
         <div className="social-login">
           <button className="google-btn" type="button">
