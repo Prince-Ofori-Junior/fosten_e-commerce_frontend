@@ -26,8 +26,8 @@ function InfoBar({ onCartClick, onHamburgerClick, onSearch, cartCount }) {
       </div>
 
       <div className="infobar-right">
-        <a href="#!" className="account-link">
-          <i className="fas fa-user"></i> Sign In
+        <a href="/register" className="account-link">
+          <i className="fas fa-user"></i> Sign In Here
         </a>
         <button className="cart-btn" onClick={onCartClick}>
           <i className="fas fa-shopping-cart"></i>

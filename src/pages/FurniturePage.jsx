@@ -2,107 +2,109 @@ import React, { useState, useEffect } from "react";
 import CategoryBar from "../components/CategoryBar";
 import ProductsGrid from "../components/ProductsGrid";
 
+// Optionally, you can import images dynamically from a CDN or environment path
+const furnitureImages = {
+  chairs: process.env.REACT_APP_PLACEHOLDER_IMAGE,
+  tables: process.env.REACT_APP_PLACEHOLDER_IMAGE,
+  sofas: process.env.REACT_APP_PLACEHOLDER_IMAGE,
+  beds: process.env.REACT_APP_PLACEHOLDER_IMAGE,
+  wardrobe: process.env.REACT_APP_PLACEHOLDER_IMAGE,
+};
+
 function FurniturePage({ addToCart, searchTerm }) {
   const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [meta, setMeta] = useState({ total: 0, page: 1, limit: 6 }); // default limit = 6 per page
+  const [meta, setMeta] = useState({ page: 1, limit: 6, total: 0 });
   const [loading, setLoading] = useState(true);
 
-  // 🔄 fetch products whenever category/search/page changes
+  // Categories (IDs could come from backend in real app)
+  const categories = [
+    { id: "uuid-chairs-123", name: "Chairs", img: furnitureImages.chairs },
+    { id: "uuid-tables-456", name: "Tables", img: furnitureImages.tables },
+    { id: "uuid-sofas-789", name: "Sofas", img: furnitureImages.sofas },
+    { id: "uuid-beds-101", name: "Beds", img: furnitureImages.beds },
+    { id: "uuid-wardrobe-112", name: "Wardrobe", img: furnitureImages.wardrobe },
+  ];
+
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchFurniture = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
+        const token = localStorage.getItem("token");
+        const API_BASE = process.env.REACT_APP_API_BASE_URL;
+        let url = `${API_BASE}/api/products?type=furniture&page=${meta.page}&limit=${meta.limit}`;
+        if (selectedCategory) url += `&category=${encodeURIComponent(selectedCategory)}`;
+        if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
 
-        let url = `http://localhost:8000/api/products?type=furniture&page=${meta.page}&limit=${meta.limit}`;
+        const res = await fetch(url, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
 
-        if (selectedCategory) {
-          url += `&category=${encodeURIComponent(selectedCategory)}`;
-        }
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        const result = await res.json();
 
-        if (searchTerm) {
-          url += `&search=${encodeURIComponent(searchTerm)}`;
-        }
-
-        const res = await fetch(url);
-        const json = await res.json();
-
-        if (json.success && json.data) {
-          setProducts(json.data.rows || []);
-          setMeta((prev) => ({
-            ...prev,
-            total: json.data.total,
-            page: json.data.page,
-            limit: json.data.limit,
-          }));
+        if (result.rows) {
+          setProducts(result.rows);
+          setMeta((prev) => ({ ...prev, total: result.total }));
         } else {
           setProducts([]);
+          setMeta((prev) => ({ ...prev, total: 0 }));
         }
       } catch (err) {
-        console.error("❌ Error fetching products:", err);
+        console.error("Error fetching furniture:", err);
         setProducts([]);
+        setMeta((prev) => ({ ...prev, total: 0 }));
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProducts();
-  }, [selectedCategory, searchTerm, meta.page, meta.limit]); // ✅ refetch on page change
+    fetchFurniture();
+
+    // 🔄 Auto-refresh every 30s
+    const interval = setInterval(fetchFurniture, 30000);
+    return () => clearInterval(interval);
+  }, [selectedCategory, searchTerm, meta.page, meta.limit]);
 
   const handleCategoryClick = (categoryId) => {
     setSelectedCategory(categoryId);
-    setMeta((prev) => ({ ...prev, page: 1 })); // reset to page 1 when category changes
+    setMeta((prev) => ({ ...prev, page: 1 }));
   };
 
   const handlePrev = () => {
-    if (meta.page > 1) {
-      setMeta((prev) => ({ ...prev, page: prev.page - 1 }));
-    }
+    if (meta.page > 1) setMeta((prev) => ({ ...prev, page: prev.page - 1 }));
   };
 
   const handleNext = () => {
     const totalPages = Math.ceil(meta.total / meta.limit);
-    if (meta.page < totalPages) {
-      setMeta((prev) => ({ ...prev, page: prev.page + 1 }));
-    }
+    if (meta.page < totalPages) setMeta((prev) => ({ ...prev, page: prev.page + 1 }));
   };
-
-  const categories = [
-    { id: "chairs", name: "Chairs", img: require("../assets/chair.png") },
-    { id: "tables", name: "Tables", img: require("../assets/table.png") },
-    { id: "sofas", name: "Sofas", img: require("../assets/sofa.png") },
-    { id: "beds", name: "Beds", img: require("../assets/bed.png") },
-    { id: "wardrobe", name: "Wardrobe", img: require("../assets/wardrope.png") },
-  ];
 
   return (
     <div>
       <CategoryBar categories={categories} onCategoryClick={handleCategoryClick} />
 
       {loading ? (
-        <p style={{ textAlign: "center" }}>Loading products...</p>
+        <p style={{ textAlign: "center" }}>Loading furniture...</p>
+      ) : products.length ? (
+        <ProductsGrid products={products} addToCart={addToCart} />
       ) : (
-        <ProductsGrid addToCart={addToCart} products={products} />
+        <p style={{ textAlign: "center" }}>No furniture available.</p>
       )}
 
-      {/* Pagination Controls */}
-      <div style={{ marginTop: "1.5rem", textAlign: "center" }}>
-        <button
-          onClick={handlePrev}
-          disabled={meta.page === 1}
-          style={{ marginRight: "1rem" }}
-        >
+      <div style={{ textAlign: "center", marginTop: "1.5rem" }}>
+        <button onClick={handlePrev} disabled={meta.page === 1}>
           ◀ Prev
         </button>
-
-        <span>
-          Page {meta.page} of {Math.ceil(meta.total / meta.limit) || 1}
+        <span style={{ margin: "0 1rem" }}>
+          Page {meta.page} of {Math.max(1, Math.ceil(meta.total / meta.limit))}
         </span>
-
         <button
           onClick={handleNext}
           disabled={meta.page >= Math.ceil(meta.total / meta.limit)}
-          style={{ marginLeft: "1rem" }}
         >
           Next ▶
         </button>

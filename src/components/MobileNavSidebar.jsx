@@ -5,7 +5,7 @@ function MobileNavSidebar({ open, onClose }) {
     <div className={`nav-sidebar ${open ? "open" : ""}`}>
       <button className="close-nav" onClick={onClose}>&times;</button>
       <ul>
-        <li><a href="/home">Home</a></li>
+        <li><a href="/">Home</a></li>
         <li className="dropdown">
           <a href="#!">Products ▾</a>
           <ul className="dropdown-menu">

@@ -10,7 +10,10 @@ import CartSidebar from "./components/CartSidebar";
 
 import ProductPage from "./pages/ProductPage";
 import FurniturePage from "./pages/FurniturePage";
-import CheckoutPage from "./pages/CheckoutPage"; // ✅ New page
+import CheckoutPage from "./pages/CheckoutPage";
+import LoginPage from "./pages/LoginPage";       
+import RegisterPage from "./pages/RegisterPage"; 
+import OrderSuccess from "./pages/OrderSuccess"; // ✅ Added import
 
 import "./App.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -19,16 +22,18 @@ function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [cartItems, setCartItems] = useState([]);
-  const [searchTerm, setSearchTerm] = useState(""); // Track search input
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const addToCart = (product) => setCartItems([...cartItems, product]);
+
   const removeFromCart = (index) => {
     const newCart = [...cartItems];
     newCart.splice(index, 1);
     setCartItems(newCart);
   };
 
-  const clearCart = () => setCartItems([]); // Clear cart after payment
+  const clearCart = () => setCartItems([]);
 
   return (
     <Router>
@@ -37,7 +42,7 @@ function App() {
         onCartClick={() => setCartOpen(true)}
         onHamburgerClick={() => setMobileNavOpen(true)}
         onSearch={(term) => setSearchTerm(term)}
-        cartCount={cartItems.length} // pass cart count
+        cartCount={cartItems.length}
       />
       <Navbar />
       <MobileNavSidebar open={mobileNavOpen} onClose={() => setMobileNavOpen(false)} />
@@ -51,21 +56,43 @@ function App() {
       <Routes>
         <Route
           path="/"
-          element={<ProductPage addToCart={addToCart} searchTerm={searchTerm} />}
+          element={
+            <ProductPage
+              addToCart={addToCart}
+              searchTerm={searchTerm}
+              selectedType={selectedCategory}
+              onCategorySelect={setSelectedCategory}
+            />
+          }
         />
         <Route
           path="/furniture"
-          element={<FurniturePage addToCart={addToCart} searchTerm={searchTerm} />}
+          element={
+            <FurniturePage
+              addToCart={addToCart}
+              searchTerm={searchTerm}
+              selectedCategory={selectedCategory}
+              onCategorySelect={setSelectedCategory}
+            />
+          }
         />
         <Route
           path="/checkout"
           element={
             <CheckoutPage
               cartItems={cartItems}
+              setCartItems={setCartItems}
               clearCart={clearCart}
             />
           }
         />
+
+        {/* ✅ Authentication Routes */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+
+        {/* ✅ Order Success Route */}
+        <Route path="/order-success" element={<OrderSuccess />} />
       </Routes>
 
       <Footer />

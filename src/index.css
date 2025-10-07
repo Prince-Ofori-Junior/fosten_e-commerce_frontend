@@ -1,5 +1,553 @@
-/* index.css */
-body {
+/* ======================================
+   GENERAL STYLES
+====================================== */
+body, html {
+  font-family: 'Inter', sans-serif;
   margin: 0;
-  font-family: Arial, sans-serif;
+  padding: 0;
 }
+
+.btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+  border: none;
+}
+
+.btn-primary {
+  background-color: #0a8e03;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #5a6268;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+/* ======================================
+   CHECKOUT PAGE
+====================================== */
+.checkout-page {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #f5f6fa;
+}
+
+.checkout-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* Top Row: Delivery & Payment */
+.top-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 25px;
+}
+
+@media(min-width: 768px) {
+  .top-row {
+    grid-template-columns: 2fr 1.5fr;
+  }
+}
+
+.checkout-section {
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px 25px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.checkout-section:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.checkout-section h2 {
+  margin-bottom: 20px;
+  color: #2c3e50;
+  font-size: 1.4rem;
+  font-weight: 600;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 10px;
+}
+
+/* Delivery Form */
+.delivery-form input {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 14px;
+  border-radius: 12px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.delivery-form input:focus {
+  outline: none;
+  border-color: #0a8e03;
+  box-shadow: 0 4px 12px rgba(10, 142, 3, 0.2);
+}
+
+/* Edit & Save Buttons */
+.change-btn,
+.btn-primary {
+  padding: 12px 25px;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.change-btn:hover,
+.btn-primary:hover {
+  transform: translateY(-2px);
+  background-color: #28a745;
+  color: #fff;
+}
+
+/* Payment Options */
+.payment-group {
+  margin-bottom: 20px;
+}
+
+.payment-group h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+}
+
+.payment-group label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  cursor: pointer;
+  background-color: #fafafa;
+  transition: all 0.3s ease;
+}
+
+.payment-group label:hover {
+  background-color: #f0fff0;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.payment-group input[type="radio"] {
+  accent-color: #0a8e03;
+}
+
+.payment-group label span {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+/* Optional: add small icons for payment */
+.payment-group label img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  margin-left: 15px;
+  transition: transform 0.2s ease;
+}
+
+.payment-group label:hover img {
+  transform: scale(1.1);
+}
+
+/* Delivery Details Static View */
+.checkout-section p {
+  font-size: 1rem;
+  margin-bottom: 12px;
+  color: #444;
+}
+
+.checkout-section strong {
+  color: #2c3e50;
+}
+
+/* Order Summary */
+.checkout-section.summary {
+  flex: 1 1 100%;
+}
+
+.order-items {
+  list-style: none;
+  padding: 0;
+}
+
+.order-items li {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.order-item-img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.order-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.quantity-stepper {
+  display: flex;
+  align-items: center;
+}
+
+.stepper-btn {
+  background-color: #0a8e03;
+  color: #fff;
+  border: none;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stepper-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.quantity-stepper input {
+  width: 50px;
+  text-align: center;
+  margin: 0 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 28px;
+}
+
+.total {
+  text-align: right;
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-top: 15px;
+  color: #2c3e50;
+}
+
+.checkout-actions {
+  margin-top: 25px;
+  text-align: right;
+}
+
+/* Error & Loading Messages */
+.error-message {
+  color: red;
+  text-align: center;
+  padding: 20px;
+  font-weight: 500;
+}
+
+.loading-message {
+  text-align: center;
+  padding: 30px;
+  color: #555;
+  font-size: 1.1rem;
+}
+
+/* Skeleton Animation */
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+/* ======================================
+   LOGIN & REGISTER PAGES
+====================================== */
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #f7f7f7, #e2e8f0);
+  padding: 20px;
+}
+
+.login-card {
+  background: #fff;
+  padding: 40px 30px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.login-card h2 {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  color: #333;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: 0.2s;
+}
+
+.login-form input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0,123,255,0.3);
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #555;
+}
+
+
+.auth-switch-text {
+  font-size: 0.95rem;
+  color: #555;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.auth-switch-link {
+  color: #007bff;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.auth-switch-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background-color: #007bff;
+  transition: width 0.25s ease;
+}
+
+.auth-switch-link:hover {
+  color: #0056b3;
+}
+
+.auth-switch-link:hover::after {
+  width: 100%;
+}
+
+/* Social Login Buttons */
+.social-login {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.social-login button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.google-btn {
+  background-color: #db4437;
+  color: #fff;
+}
+
+.google-btn:hover {
+  background-color: #c1351d;
+}
+
+.facebook-btn {
+  background-color: #3b5998;
+  color: #fff;
+}
+
+.facebook-btn:hover {
+  background-color: #2d4373;
+}
+
+/* Divider */
+.divider {
+  text-align: center;
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+}
+
+.divider span {
+  flex: 1;
+  border-bottom: 1px solid #ccc;
+  line-height: 0;
+  margin: 0 10px;
+  color: #777;
+}
+
+.divider::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background: #ccc;
+  top: 50%;
+  left: 0;
+  z-index: 0;
+}
+
+/* ======================================
+   ORDER STATUS
+====================================== */
+.order-status {
+  max-width: 600px;
+  margin: 80px auto;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.order-status h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.order-status p {
+  font-size: 1rem;
+  margin: 8px 0;
+  line-height: 1.5;
+  color: #444;
+}
+
+.order-summary {
+  background: #f8f9fa;
+  margin: 20px 0;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.order-summary h3 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.order-summary p {
+  font-size: 0.95rem;
+  margin: 4px 0;
+}
+
+.order-status.success {
+  border: 2px solid #28a745;
+  background: #e9f9ef;
+}
+
+.success-icon {
+  font-size: 3rem;
+  color: #28a745;
+  margin-bottom: 10px;
+}
+
+.order-status.error {
+  border: 2px solid #dc3545;
+  background: #fcebec;
+}
+
+.error-icon {
+  font-size: 3rem;
+  color: #dc3545;
+  margin-bottom: 10px;
+}
+
+.order-status.loading {
+  border: 2px dashed #ff9800;
+  background: #fff8e5;
+}
+
+.order-status.loading p {
+  color: #d17a00;
+  font-weight: 600;
+}
+
+.redirect-note {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
+}
+
+.order-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+/* ======================================
+   ANIMATIONS
+====================================== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.delivery-logo {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.delivery-logo img {
+  width: 400px;     /* increase size */
+  height: auto;     /* maintain aspect ratio */
+  border-radius: 8px; /* optional styling */
+}
+

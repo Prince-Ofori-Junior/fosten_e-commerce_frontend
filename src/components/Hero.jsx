@@ -6,7 +6,7 @@ function Hero() {
       <div className="hero-content">
         <h1>Welcome to My Store</h1>
         <p>We sell high quality furniture, nutritious Tom Brown, and fresh groundnut paste.</p>
-        <a href="productsGrid!" className="btn">Shop Now</a>
+        {/* <a href="/" className="btn">Shop Now</a> */}
       </div>
     </section>
   );
