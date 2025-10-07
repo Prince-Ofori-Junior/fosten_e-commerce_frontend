@@ -21,13 +21,10 @@ const RegisterPage = () => {
 
   const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
-  // Fetch CSRF token on mount
   useEffect(() => {
     const fetchCsrf = async () => {
       try {
-        const res = await fetch(`${API_BASE}/csrf-token`, {
-          credentials: "include",
-        });
+        const res = await fetch(`${API_BASE}/csrf-token`, { credentials: "include" });
         const data = await res.json();
         setCsrfToken(data.csrfToken);
       } catch (err) {
@@ -44,53 +41,49 @@ const RegisterPage = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setGeneralError("");
-  setFieldErrors({});
-  setSuccess("");
-  setLoading(true);
+    e.preventDefault();
+    setGeneralError("");
+    setFieldErrors({});
+    setSuccess("");
+    setLoading(true);
 
-  try {
-    const res = await fetch(`${API_BASE}/api/auth/register`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRF-Token": csrfToken,
-      },
-      body: JSON.stringify(form),
-    });
+    try {
+      const res = await fetch(`${API_BASE}/api/auth/register`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
+        },
+        body: JSON.stringify(form),
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (!res.ok) {
-      const errorsObj = {};
-      let generalMsg = "";
+      if (!res.ok) {
+        const errorsObj = {};
+        let generalMsg = "";
 
-      if (data.errors && Array.isArray(data.errors)) {
-        data.errors.forEach((err) => {
-          if (err.param) {
-            errorsObj[err.param] = err.message;
-          } else {
-            generalMsg = err.message || generalMsg;
-          }
-        });
-        if (Object.keys(errorsObj).length > 0) setFieldErrors(errorsObj);
+        if (data.errors && Array.isArray(data.errors)) {
+          data.errors.forEach((err) => {
+            if (err.param) errorsObj[err.param] = err.message;
+            else generalMsg = err.message || generalMsg;
+          });
+        }
+
+        setFieldErrors(errorsObj);
+        throw new Error(generalMsg || data.message || "Registration failed. Please try again.");
       }
 
-      throw new Error(generalMsg || data.message || "Registration failed. Please try again.");
+      localStorage.setItem("token", data.data?.accessToken || "");
+      setSuccess("🎉 Registration successful! Redirecting to login...");
+      setTimeout(() => navigate("/login"), 2000);
+    } catch (err) {
+      setGeneralError(err.message || "Unexpected error occurred");
+    } finally {
+      setLoading(false);
     }
-
-    // Registration success
-    localStorage.setItem("token", data.data?.accessToken || "");
-    setSuccess("🎉 Registration successful! Redirecting to login...");
-    setTimeout(() => navigate("/login"), 2000);
-  } catch (err) {
-    setGeneralError(err.message || "Unexpected error occurred");
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
   return (
     <div className="login-page">
@@ -157,10 +150,7 @@ const RegisterPage = () => {
               required
               minLength={6}
             />
-            <span
-              className="toggle-password"
-              onClick={() => setShowPassword(!showPassword)}
-            >
+            <span className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
               {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
             {fieldErrors.password && <p className="error-message">{fieldErrors.password}</p>}
@@ -183,13 +173,11 @@ const RegisterPage = () => {
         </div>
 
         <p className="auth-switch-text">
-  Already have an account?{" "}
-  <span className="auth-switch-link" onClick={() => navigate("/login")}>
-    Login here
-  </span>
-</p>
-
-
+          Already have an account?{" "}
+          <span className="auth-switch-link" onClick={() => navigate("/login")}>
+            Login here
+          </span>
+        </p>
       </div>
     </div>
   );
