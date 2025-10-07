@@ -40,49 +40,54 @@ const LoginPage = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setFieldErrors({});
-    setGeneralError("");
-    setSuccess("");
-    setLoading(true);
+  e.preventDefault();
+  setFieldErrors({});
+  setGeneralError("");
+  setSuccess("");
+  setLoading(true);
 
-    try {
-      const res = await fetch(`${API_BASE}/api/auth/login`, {
-        method: "POST",
-        credentials: "include", // for CSRF cookies
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-Token": csrfToken,
-        },
-        body: JSON.stringify(form),
-      });
+  try {
+    const res = await fetch(`${API_BASE}/api/auth/login`, {
+      method: "POST",
+      credentials: "include", // for CSRF cookies
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": csrfToken,
+      },
+      body: JSON.stringify(form),
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (!res.ok) {
-        const errorsObj = {};
-        if (data.errors && Array.isArray(data.errors)) {
-          data.errors.forEach((err) => {
-            if (err.param) errorsObj[err.param] = err.msg || err.message;
-          });
-          if (Object.keys(errorsObj).length > 0) {
-            setFieldErrors(errorsObj);
-            throw new Error("Please fix the errors above.");
+    if (!res.ok) {
+      const errorsObj = {};
+      let generalMsg = "";
+
+      if (data.errors && Array.isArray(data.errors)) {
+        data.errors.forEach((err) => {
+          if (err.param) {
+            errorsObj[err.param] = err.message;
+          } else {
+            generalMsg = err.message || generalMsg;
           }
-        }
-        throw new Error(data.message || "Invalid email or password");
+        });
+
+        if (Object.keys(errorsObj).length > 0) setFieldErrors(errorsObj);
       }
 
-      // Login success
-      localStorage.setItem("token", data.data?.accessToken || "");
-      setSuccess("✅ Login successful! Redirecting...");
-      setTimeout(() => navigate(REDIRECT_PATH), 1500);
-    } catch (err) {
-      setGeneralError(err.message || "Unexpected error occurred");
-    } finally {
-      setLoading(false);
+      throw new Error(generalMsg || data.message || "Invalid email or password");
     }
-  };
+
+    // Login success
+    localStorage.setItem("token", data.data?.accessToken || "");
+    setSuccess("✅ Login successful! Redirecting...");
+    setTimeout(() => navigate(REDIRECT_PATH), 1500);
+  } catch (err) {
+    setGeneralError(err.message || "Unexpected error occurred");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="login-page">

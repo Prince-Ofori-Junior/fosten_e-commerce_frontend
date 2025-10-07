@@ -42,7 +42,6 @@ const Checkout = ({ cartItems, setCartItems }) => {
   );
 
   // ------------------- FETCH DELIVERY & PAYMENT METHODS -------------------
-  // ------------------- FETCH DELIVERY & PAYMENT METHODS -------------------
 useEffect(() => {
   const token = localStorage.getItem("token");
   if (!token) return navigate("/login");
@@ -92,7 +91,6 @@ useEffect(() => {
   fetchPaymentMethods();
 }, [navigate]);
 
-  // ------------------- SAVE DELIVERY DETAILS -------------------
   // ------------------- SAVE DELIVERY DETAILS -------------------
 const handleSaveDeliveryDetails = async () => {
   const token = localStorage.getItem("token");
