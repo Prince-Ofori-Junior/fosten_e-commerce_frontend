@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "homepage": " ",
+"homepage": ".",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.0.1",
     "@stripe/stripe-js": "^8.0.0",
