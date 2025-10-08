@@ -1,3 +1,14 @@
+// ------------------- DISABLE CONSOLE LOGS IN PRODUCTION -------------------
+if (process.env.NODE_ENV === "production") {
+  const noop = () => {};
+  console.log = noop;
+  console.info = noop;
+  console.warn = noop;
+  console.error = noop;
+  console.debug = noop;
+}
+
+// ------------------- EXISTING IMPORTS -------------------
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -18,6 +29,7 @@ import OrderSuccess from "./pages/OrderSuccess"; // ✅ Added import
 import "./App.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
+// ------------------- YOUR APP COMPONENT -------------------
 function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -26,13 +38,11 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const addToCart = (product) => setCartItems([...cartItems, product]);
-
   const removeFromCart = (index) => {
     const newCart = [...cartItems];
     newCart.splice(index, 1);
     setCartItems(newCart);
   };
-
   const clearCart = () => setCartItems([]);
 
   return (
