@@ -94,7 +94,7 @@ function ProductPage({ addToCart, searchTerm, selectedType }) {
         <p style={{ textAlign: "center" }}>No products available.</p>
       )}
 
-      {loading && <p style={{ textAlign: "center" }}>Loading more products...</p>}
+      {loading && <p style={{ textAlign: "center" }}></p>}
     </div>
   );
 }

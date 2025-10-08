@@ -21,14 +21,19 @@ const RegisterPage = () => {
 
   const API_BASE = process.env.REACT_APP_API_BASE_URL;
 
+  // ✅ Fetch CSRF token on mount (once)
   useEffect(() => {
     const fetchCsrf = async () => {
       try {
-        const res = await fetch(`${API_BASE}/csrf-token`, { credentials: "include" });
+        const res = await fetch(`${API_BASE}/csrf-token`, {
+          credentials: "include", // includes cookies for CSRF
+        });
+        if (!res.ok) throw new Error("Failed to fetch CSRF token");
         const data = await res.json();
         setCsrfToken(data.csrfToken);
+        console.log("✅ CSRF token loaded");
       } catch (err) {
-        console.error("Failed to fetch CSRF token", err);
+        console.warn("⚠️ CSRF token fetch skipped:", err.message);
       }
     };
     fetchCsrf();
@@ -50,10 +55,10 @@ const RegisterPage = () => {
     try {
       const res = await fetch(`${API_BASE}/api/auth/register`, {
         method: "POST",
-        credentials: "include",
+        credentials: "include", // important for CSRF cookie
         headers: {
           "Content-Type": "application/json",
-          "X-CSRF-Token": csrfToken,
+          ...(csrfToken ? { "X-CSRF-Token": csrfToken } : {}),
         },
         body: JSON.stringify(form),
       });
@@ -93,7 +98,7 @@ const RegisterPage = () => {
         {generalError && <p className="error-message">{generalError}</p>}
         {success && <p className="success-message">{success}</p>}
 
-        <form onSubmit={handleSubmit} className="login-form">
+        <form onSubmit={handleSubmit} className="login-form" autoComplete="on">
           <div className="form-group">
             <input
               type="text"
@@ -102,6 +107,7 @@ const RegisterPage = () => {
               value={form.name}
               onChange={handleChange}
               required
+              autoComplete="name"
             />
             {fieldErrors.name && <p className="error-message">{fieldErrors.name}</p>}
           </div>
@@ -114,6 +120,7 @@ const RegisterPage = () => {
               value={form.email}
               onChange={handleChange}
               required
+              autoComplete="email"
             />
             {fieldErrors.email && <p className="error-message">{fieldErrors.email}</p>}
           </div>
@@ -125,17 +132,19 @@ const RegisterPage = () => {
               placeholder="Address"
               value={form.address}
               onChange={handleChange}
+              autoComplete="street-address"
             />
             {fieldErrors.address && <p className="error-message">{fieldErrors.address}</p>}
           </div>
 
           <div className="form-group">
             <input
-              type="text"
+              type="tel"
               name="phone"
               placeholder="Phone"
               value={form.phone}
               onChange={handleChange}
+              autoComplete="tel"
             />
             {fieldErrors.phone && <p className="error-message">{fieldErrors.phone}</p>}
           </div>
@@ -149,6 +158,7 @@ const RegisterPage = () => {
               onChange={handleChange}
               required
               minLength={6}
+              autoComplete="new-password"
             />
             <span className="toggle-password" onClick={() => setShowPassword(!showPassword)}>
               {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -156,8 +166,8 @@ const RegisterPage = () => {
             {fieldErrors.password && <p className="error-message">{fieldErrors.password}</p>}
           </div>
 
-          <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? "Registering..." : "Register"}
+          <button type="submit" className="btn-primary" disabled={loading || !csrfToken}>
+            {loading ? "Registering..." : csrfToken ? "Register" : "Loading..."}
           </button>
         </form>
 

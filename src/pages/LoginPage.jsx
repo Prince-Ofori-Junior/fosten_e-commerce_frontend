@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "../index.css";
 import { FaGoogle, FaFacebookF, FaEye, FaEyeSlash } from "react-icons/fa";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // ✅ to know where user came from
   const [form, setForm] = useState({ email: "", password: "" });
   const [fieldErrors, setFieldErrors] = useState({});
   const [generalError, setGeneralError] = useState("");
@@ -15,6 +16,9 @@ const LoginPage = () => {
 
   const API_BASE = process.env.REACT_APP_API_BASE_URL;
   const REDIRECT_PATH = process.env.REACT_APP_DEFAULT_REDIRECT || "/";
+
+  // ✅ Determine where to go after login
+  const from = location.state?.from || REDIRECT_PATH;
 
   // ✅ Fetch CSRF token once on mount
   useEffect(() => {
@@ -81,7 +85,9 @@ const LoginPage = () => {
       // ✅ Login success
       localStorage.setItem("token", data.data?.accessToken || "");
       setSuccess("✅ Login successful! Redirecting...");
-      setTimeout(() => navigate(REDIRECT_PATH), 1500);
+
+      // ✅ Redirect to the original page user intended (checkout or main)
+      setTimeout(() => navigate(from, { replace: true }), 1500);
     } catch (err) {
       setGeneralError(err.message || "Unexpected error occurred");
     } finally {
