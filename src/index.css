@@ -186,6 +186,7 @@ body, html {
 /* Order Summary */
 .checkout-section.summary {
   flex: 1 1 100%;
+  width: 102.3%;
 }
 
 .order-items {
@@ -445,7 +446,7 @@ body, html {
    ORDER STATUS
 ====================================== */
 .order-status {
-  max-width: 600px;
+  max-width: 300px;;
   margin: 80px auto;
   padding: 30px;
   border-radius: 12px;
@@ -455,13 +456,13 @@ body, html {
 }
 
 .order-status h2 {
-  font-size: 1.8rem;
+  font-size: 1.5rem;
   margin-bottom: 10px;
   font-weight: 700;
 }
 
 .order-status p {
-  font-size: 1rem;
+  font-size: 0.7rem;
   margin: 8px 0;
   line-height: 1.5;
   color: #444;
@@ -546,61 +547,8 @@ body, html {
 }
 
 .delivery-logo img {
-  width: 400px;     /* increase size */
+  width: 80%;     /* increase size */
   height: auto;     /* maintain aspect ratio */
   border-radius: 8px; /* optional styling */
 }
 
-/* ======================================
-   ORDER SUMMARY RESPONSIVE FIX
-====================================== */
-
-/* Make sure the summary card content fits inside on all screen sizes */
-.checkout-section.summary {
-  overflow: hidden;
-  word-wrap: break-word;
-}
-
-/* Ensure order items wrap correctly */
-.order-items li {
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-/* Prevent images and text from squeezing too tight */
-.order-item-img {
-  flex-shrink: 0;
-}
-
-/* Stack controls properly on smaller screens */
-@media (max-width: 600px) {
-  .order-items li {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .quantity-stepper {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .quantity-stepper input {
-    width: 60px;
-  }
-
-  .checkout-actions {
-    text-align: center;
-  }
-
-  .checkout-actions .btn {
-    width: 100%;
-    max-width: 300px;
-  }
-
-  .total {
-    text-align: center;
-    font-size: 1.2rem;
-  }
-}
