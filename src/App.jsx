@@ -29,6 +29,16 @@ import OrderSuccess from "./pages/OrderSuccess"; // ✅ Added import
 import "./App.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
+// ------------------- DISABLE CONSOLE LOGS IN PRODUCTION -------------------
+if (process.env.NODE_ENV === "production") {
+  const noop = () => {};
+  console.log = noop;
+  console.info = noop;
+  console.warn = noop;
+  console.error = noop;
+  console.debug = noop;
+}
+
 // ------------------- YOUR APP COMPONENT -------------------
 function App() {
   const [cartOpen, setCartOpen] = useState(false);
