@@ -1,5 +1,3 @@
-
-// ------------------- EXISTING IMPORTS -------------------
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -30,7 +28,6 @@ if (process.env.NODE_ENV === "production") {
   console.debug = noop;
 }
 
-// ------------------- YOUR APP COMPONENT -------------------
 function App() {
   const [cartOpen, setCartOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
@@ -39,11 +36,13 @@ function App() {
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const addToCart = (product) => setCartItems([...cartItems, product]);
+
   const removeFromCart = (index) => {
     const newCart = [...cartItems];
     newCart.splice(index, 1);
     setCartItems(newCart);
   };
+
   const clearCart = () => setCartItems([]);
 
   return (
