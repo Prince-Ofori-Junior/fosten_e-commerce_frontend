@@ -32,7 +32,7 @@ function FurniturePage({ addToCart, searchTerm }) {
       try {
         const token = localStorage.getItem("token");
         const API_BASE = process.env.REACT_APP_API_BASE_URL;
-        let url = `${API_BASE}/api/admin/products?type=furniture&page=${meta.page}&limit=${meta.limit}`;
+        let url = `${API_BASE}/api/products?type=furniture&page=${meta.page}&limit=${meta.limit}`;
         if (selectedCategory) url += `&category=${encodeURIComponent(selectedCategory)}`;
         if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
 
