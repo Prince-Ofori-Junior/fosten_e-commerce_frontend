@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:8000", // adjust if backend URL changes
+  baseURL: "https://fosten-e-commerce-backend.onrender.com/", // adjust if backend URL changes
 });
 
 // Attach token automatically

@@ -28,7 +28,7 @@ function ProductPage({ addToCart, searchTerm, selectedType }) {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      let url = `${API_BASE}/api/products?page=${page}&limit=${limit}`;
+      let url = `${API_BASE}/api/admin/products?page=${page}&limit=${limit}`;
       if (selectedType) url += `&category=${encodeURIComponent(selectedType)}`;
       if (searchTerm) url += `&search=${encodeURIComponent(searchTerm)}`;
 
